@@ -533,7 +533,34 @@ html.lite-mode .btn:active{transform:none !important}
 #view-comentarios select,
 #view-comentarios textarea{width:100%}
 
-/* ===== Responsivo ===== */
+/* ===== Abas Pro bloqueadas (Turmas / Loja) ===== */
+#navTurmas.locked,
+#navLoja.locked{
+  position:relative;
+  opacity:.55;
+  cursor:not-allowed;
+  filter:grayscale(.5);
+}
+#navTurmas.locked:hover,
+#navLoja.locked:hover{
+  opacity:.55;
+  background:transparent;
+}
+#navTurmas.locked::after,
+#navLoja.locked::after{
+  content:'🔒';
+  font-size:10px;
+  position:absolute;
+  top:2px;
+  right:2px;
+  filter:none;
+  opacity:1;
+}
+
+/* ============================================================
+   RESPONSIVO
+   ============================================================ */
+
 @media (max-width:1023px){
   .world-layout{grid-template-columns:1fr}
   .side-col{position:static;display:grid;grid-template-columns:1fr 1fr;align-items:start}
@@ -558,21 +585,6 @@ html.lite-mode .btn:active{transform:none !important}
   .hud-aluno{max-width:90px;padding:3px 7px 3px 4px;font-size:11.5px}
   .hud-aluno .hud-avatar{width:22px;height:22px;font-size:13px}
   .sessao-chip{font-size:11px;padding:3px 7px}
-
-  #view-licao{height:auto;min-height:calc(100dvh - var(--header-h))}
-  .lesson{padding:8px 10px 12px;gap:8px;height:auto;min-height:calc(100dvh - var(--header-h))}
-  .paper-wrap{flex:none;height:auto;min-height:200px;max-height:45vh}
-  .paper{padding:18px 12px 16px}
-  .piano{height:130px}
-  .lesson-tip{font-size:12px;padding:6px 10px}
-  .hint-label{display:none}
-  .lesson-controls{gap:6px}
-  .lesson-controls .btn.small{padding:6px 10px;font-size:12px}
-  .switch{font-size:11.5px;padding:5px 9px}
-  .lesson-top{gap:8px}
-  .lesson-title h2{font-size:16px}
-  .lesson-title small{font-size:10px}
-  .hearts .heart .ic{width:18px;height:18px}
 
   .mainnav.aberto{
     position:fixed;
@@ -610,21 +622,6 @@ html.lite-mode .btn:active{transform:none !important}
   .icon-btn{width:30px;height:30px}
   .icon-btn .ic{width:15px;height:15px}
 
-  .lesson{gap:6px;padding:6px 8px 10px}
-  .paper-wrap{min-height:180px;max-height:40vh}
-  .piano{height:110px}
-  .kbd-line{display:none}
-  .lesson-controls .spacer{display:none}
-  .lesson-controls .btn.small span{display:none}
-  .lesson-controls .btn.small{padding:7px 9px}
-  .switch{font-size:11px;padding:4px 8px}
-  .switch .knob{width:28px;height:16px}
-  .switch .knob::after{width:12px;height:12px}
-  .switch[aria-checked="true"] .knob::after{left:14px}
-  .note-chip{font-size:15px;padding:2px 10px;min-width:44px}
-  .hint-msg{font-size:12px}
-  .pcount{font-size:11.5px}
-
   .modal{padding:16px 12px;border-radius:18px}
   .modal-head h3{font-size:17px}
   .modal-title{font-size:22px}
@@ -637,12 +634,6 @@ html.lite-mode .btn:active{transform:none !important}
   .stat span{font-size:9px}
   #toasts{left:8px;right:8px;bottom:8px;max-width:none}
   .toast{font-size:12.5px;padding:10px 12px}
-
-  #metronomeBtn span:not(.icw),
-  #metLightBtn span:not(.met-lamps){display:none}
-
-  .hint-inline .hint-label{display:none}
-  .hint-inline .hint-msg{white-space:normal;font-size:12px}
 }
 
 @media (max-width:560px){
@@ -650,7 +641,6 @@ html.lite-mode .btn:active{transform:none !important}
   .side-col{grid-template-columns:1fr}
   h1{font-size:24px}
   .w-node{width:66px;height:66px;font-size:19px}
-  .piano{height:140px}
   .world{padding:28px 14px 24px}
   .world-titles h2{font-size:21px}
   .hud-aluno .hud-nome{display:none}
@@ -672,115 +662,261 @@ html.lite-mode .btn:active{transform:none !important}
   .lesson-controls{flex-wrap:wrap;gap:6px}
 }
 
-/* ===== Celular: layout em blocos separados ===== */
+/* ============================================================
+   CELULAR: LIÇÃO EM TELA CHEIA (layout em blocos)
+   — ÚNICO bloco que define #view-licao no mobile
+   ============================================================ */
 @media (max-width: 640px){
   body.in-lesson{overflow:hidden !important}
-  #view-licao{
+
+  /* ⚠️ Só aplica layout em tela cheia quando a lição está ATIVA */
+  #view-licao.active{
     position:fixed !important;
     top:var(--header-h) !important;
     left:0 !important;right:0 !important;bottom:0 !important;
-    height:auto !important;min-height:0 !important;
-    display:flex !important;overflow:hidden !important;z-index:5;
+    height:auto !important;
+    min-height:0 !important;
+    display:flex !important;
+    overflow:hidden !important;
+    z-index:5;
   }
-  #view-licao .lesson{
-    flex:1 1 0 !important;height:auto !important;min-height:0 !important;max-width:none !important;
-    padding:6px 10px 8px !important;gap:5px !important;
-    display:flex !important;flex-direction:column !important;overflow:hidden !important;
+
+  /* Quando NÃO estiver ativa, garante que fica escondida */
+  #view-licao:not(.active){
+    display:none !important;
+    position:static !important;
   }
-  #view-licao .lesson-top,
-  #view-licao .lesson-progress,
-  #view-licao .lesson-controls,
-  #view-licao .piano-scroll{flex-shrink:0 !important}
-  #view-licao .lesson-tip,
-  #view-licao .kbd-line{display:none !important}
-  #view-licao .paper-wrap{
-    flex:1 1 0 !important;min-height:90px !important;max-height:none !important;
-    position:relative !important;overflow:hidden !important;
+
+  /* Os filhos: manter como estão, mas sob #view-licao.active */
+  #view-licao.active .lesson{
+    flex:1 1 auto !important;
+    height:100% !important;
+    min-height:0 !important;
+    max-width:none !important;
+    padding:6px 10px 8px !important;
+    gap:5px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    overflow:hidden !important;
   }
-  #view-licao .paper{position:absolute !important;inset:0 !important;padding:6px 8px !important;overflow:auto !important}
-  #view-licao .lesson-controls{flex-wrap:wrap !important;gap:5px !important;padding:6px 8px !important}
-  #view-licao .lesson-controls .btn.small{padding:6px 9px !important;font-size:11px !important}
-  #view-licao .lesson-controls .btn.small span{display:inline !important}
-  #view-licao .lesson-controls .switch{padding:5px 8px !important;font-size:10.5px !important}
-  #view-licao .lesson-controls .switch .knob{width:26px !important;height:14px !important}
-  #view-licao .lesson-controls .switch .knob::after{width:10px !important;height:10px !important}
-  #view-licao .lesson-controls .switch[aria-checked="true"] .knob::after{left:14px !important}
-  #view-licao .hint-inline{flex:1 1 100% !important;margin-left:0 !important;gap:5px !important;justify-content:flex-start !important}
-  #view-licao .hint-inline .hint-label{display:none !important}
-  #view-licao .hint-inline .hint-msg{font-size:11px !important;white-space:normal !important;line-height:1.2 !important}
-  #view-licao .hint-inline .note-chip{font-size:13px !important;padding:2px 9px !important;min-width:38px !important}
-  #view-licao .piano{height:95px !important}
-  #view-licao .piano-scroll{padding:6px 8px 8px !important}
-  #view-licao .lesson-top{gap:6px !important}
-  #view-licao .lesson-top .icon-btn{width:30px !important;height:30px !important}
-  #view-licao .lesson-title h2{font-size:14px !important}
-  #view-licao .lesson-title small{font-size:9px !important}
-  #view-licao .hearts .heart .ic{width:16px !important;height:16px !important}
-  #view-licao .pbar{height:8px !important}
-  #view-licao .pcount{font-size:10.5px !important}
+
+  #view-licao.active .lesson-top,
+  #view-licao.active .lesson-progress,
+  #view-licao.active .lesson-controls,
+  #view-licao.active .piano-scroll{flex-shrink:0 !important}
+
+  #view-licao.active .lesson-tip,
+  #view-licao.active .kbd-line{display:none !important}
+
+  #view-licao.active .paper-wrap{
+    flex:1 1 auto !important;
+    min-height:120px !important;
+    max-height:none !important;
+    position:relative !important;
+    overflow:hidden !important;
+  }
+  #view-licao.active .paper{
+    position:absolute !important;
+    inset:0 !important;
+    padding:6px 8px !important;
+    overflow:auto !important;
+    background:var(--paper) !important;
+  }
+
+  #view-licao.active .lesson-controls{flex-wrap:wrap !important;gap:5px !important;padding:6px 8px !important}
+  #view-licao.active .lesson-controls .btn.small{padding:6px 9px !important;font-size:11px !important}
+  #view-licao.active .lesson-controls .btn.small span{display:inline !important}
+  #view-licao.active .lesson-controls .switch{padding:5px 8px !important;font-size:10.5px !important}
+  #view-licao.active .lesson-controls .switch .knob{width:26px !important;height:14px !important}
+  #view-licao.active .lesson-controls .switch .knob::after{width:10px !important;height:10px !important}
+  #view-licao.active .lesson-controls .switch[aria-checked="true"] .knob::after{left:14px !important}
+  #view-licao.active .hint-inline{flex:1 1 100% !important;margin-left:0 !important;gap:5px !important;justify-content:flex-start !important}
+  #view-licao.active .hint-inline .hint-label{display:none !important}
+  #view-licao.active .hint-inline .hint-msg{font-size:11px !important;white-space:normal !important;line-height:1.2 !important}
+  #view-licao.active .hint-inline .note-chip{font-size:13px !important;padding:2px 9px !important;min-width:38px !important}
+  #view-licao.active .piano{height:95px !important}
+  #view-licao.active .piano-scroll{padding:6px 8px 8px !important}
+  #view-licao.active .lesson-top{gap:6px !important}
+  #view-licao.active .lesson-top .icon-btn{width:30px !important;height:30px !important}
+  #view-licao.active .lesson-title h2{font-size:14px !important}
+  #view-licao.active .lesson-title small{font-size:9px !important}
+  #view-licao.active .hearts .heart .ic{width:16px !important;height:16px !important}
+  #view-licao.active .pbar{height:8px !important}
+  #view-licao.active .pcount{font-size:10.5px !important}
+}
+  /* ===== Preview da biblioteca (modal) ===== */
+#previewPaper{
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+#previewPaper svg{
+  display: block !important;
+  max-width: 100% !important;
+  height: auto !important;
+  overflow: visible !important;
+  transform: none !important;
+  transform-origin: 0 0 !important;
+  -webkit-transform: none !important;
+  -webkit-transform-origin: 0 0 !important;
+}
+#previewPaper .paper-error{
+  color: #8A4A3A;
+  font-weight: 800;
+  text-align: center;
+  padding: 40px 16px;
+  font-size: 14px;
 }
 
-@media (prefers-reduced-motion:reduce){
-  #aurora i,#bgNotes span,.mascot svg,.w-node.current::after{animation:none!important}
-  html{scroll-behavior:auto}
+  /* ===== Alternador Galeria / Lista ===== */
+.view-toggle{
+  display:inline-flex;
+  gap:2px;
+  background:#221040;
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:3px;
+  flex-shrink:0;
+}
+.view-toggle-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:34px;
+  height:30px;
+  border:none;
+  background:transparent;
+  color:var(--ink3);
+  border-radius:8px;
+  cursor:pointer;
+  transition:background .15s, color .15s;
+}
+.view-toggle-btn:hover{ color:var(--ink); }
+.view-toggle-btn[aria-pressed="true"]{
+  background:var(--surface2);
+  color:var(--ink);
+  box-shadow:0 1px 3px rgba(0,0,0,.35);
+}
+.view-toggle-btn svg{ pointer-events:none; }
+
+/* ===== Modo LISTA (padrão ao abrir o app) ===== */
+#songGrid.mode-list{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:10px !important;
+  grid-template-columns:none !important;
+}
+#songGrid.mode-list .song-card{
+  display:grid !important;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "head actions"
+    "title actions"
+    "meta actions"
+    "stars actions";
+  gap:4px 16px;
+  align-items:center;
+  padding:12px 14px;
+  border-radius:14px;
+  transform:none !important;
+}
+#songGrid.mode-list .song-card::before{
+  top:0; bottom:0; left:0; right:auto;
+  width:4px; height:auto;
+  border-radius:14px 0 0 14px;
+}
+#songGrid.mode-list .card-badges{
+  grid-area: head;
+  gap:6px;
+}
+#songGrid.mode-list .song-card h3{
+  grid-area: title;
+  font-size:15.5px;
+  margin:0;
+}
+#songGrid.mode-list .composer{
+  grid-area: meta;
+  font-size:11.5px;
+  margin:0;
+  color:var(--ink3);
+}
+#songGrid.mode-list .chiprow.mini{
+  display:none;
+}
+#songGrid.mode-list .card-stars{
+  grid-area: stars;
+  font-size:13px;
+  letter-spacing:1.5px;
+}
+#songGrid.mode-list .card-actions{
+  grid-area: actions;
+  margin-top:0;
+  padding-top:0;
+  flex-direction:column;
+  align-items:stretch;
+  gap:5px;
+  min-width:110px;
+}
+#songGrid.mode-list .card-actions .btn{
+  width:100%;
+  justify-content:center;
+  padding:6px 10px;
+  font-size:12px;
+}
+#songGrid.mode-list .card-actions .btn.icon-only{
+  width:100%;
+}
+#songGrid.mode-list .empty-state{
+  width:100%;
 }
 
-/* Abas Pro bloqueadas */
-.mainnav a.locked,
-.mainnav button.locked{
-  position: relative;
-  opacity: 0.55;
-  cursor: not-allowed;
-  filter: grayscale(0.5);
-}
-.mainnav a.locked::after,
-.mainnav button.locked::after{
-  content: '🔒';
-  font-size: 10px;
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  filter: none;
-  opacity: 1;
-}
-.mainnav a.locked:hover,
-.mainnav button.locked:hover{
-  opacity: 0.55; /* não muda no hover */
-  background: transparent;
-}
+/* Mobile: lista mais compacta */
+@media (max-width:640px){
+  #songGrid.mode-list .song-card{
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "head"
+      "title"
+      "meta"
+      "stars"
+      "actions";
+    gap:3px;
+    padding:10px 12px;
+  }
+  #songGrid.mode-list .card-actions{
+    flex-direction:row;
+    flex-wrap:wrap;
+    margin-top:6px;
+  }
+  #songGrid.mode-list .card-actions .btn{
+    flex:1 1 auto;
+    min-width:0;
+  }
 
-.mainnav a.locked,
-.mainnav button.locked,
-#navTurmas.locked,
-#navLoja.locked{
-  position: relative;
-  opacity: 0.55;
-  cursor: not-allowed;
-  filter: grayscale(0.5);
+  /* ===== Preview da biblioteca — SVG sempre visível ===== */
+#previewPaper{
+  min-height: 180px !important;
+  overflow-x: auto !important;          /* 👈 rola em vez de cortar */
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  color: var(--paper-ink) !important;
+  box-sizing: border-box;
+  padding: 12px 10px !important;        /* 👈 reduz padding p/ caber mais */
 }
-#navTurmas.locked::after,
-#navLoja.locked::after{
-  content: '🔒';
-  font-size: 10px;
-  position: absolute;
-  top: 2px;
-  right: 2px;
+#previewPaper svg{
+  display: block !important;
+  max-width: 100% !important;
+  height: auto !important;
+  transform: none !important;           /* 👈 desfaz o scale(1.05) do ABCJS */
+  transform-origin: 0 0 !important;
+  overflow: visible !important;
 }
-
-#navTurmas.locked,
-#navLoja.locked{
-  position: relative;
-  opacity: 0.55;
-  cursor: not-allowed;
-  filter: grayscale(0.5);
-}
-#navTurmas.locked::after,
-#navLoja.locked::after{
-  content: '🔒';
-  font-size: 10px;
-  position: absolute;
-  top: 2px;
-  right: 2px;
+#previewPaper .paper-error{
+  color: #8A4A3A;
+  font-weight: 800;
+  text-align: center;
+  padding: 40px 16px;
+  font-size: 14px;
 }
 </style>
 
@@ -923,22 +1059,41 @@ html.lite-mode .btn:active{transform:none !important}
       <div class="lib-head">
         <div><h1>Biblioteca de músicas</h1><p class="sub">Suas músicas e as da trilha.</p></div>
       </div>
-      <div class="toolbar">
-        <div class="searchfield"><i class="icw" data-icon="search"></i><input id="libSearch" type="search" placeholder="Buscar por título ou autor…"></div>
-        <select id="libTab">
-          <option value="todas">Todas</option>
-          <option value="compradas">Minhas compras</option>
-          <option value="trilha">Só da trilha</option>
-        </select>
-        <select id="libDiff">
-          <option value="all">Todas as dificuldades</option>
-          <option value="1">1 • Iniciante</option><option value="2">2 • Básico</option>
-          <option value="3">3 • Intermediário</option><option value="4">4 • Avançado</option><option value="5">5 • Mestre</option>
-        </select>
-        <select id="libSort">
-          <option value="diff-asc">Dificuldade ↑</option><option value="diff-desc">Dificuldade ↓</option>
-          <option value="title">Título A–Z</option><option value="status">Status</option>
-        </select>
+     <div class="toolbar">
+  <div class="searchfield"><i class="icw" data-icon="search"></i><input id="libSearch" type="search" placeholder="Buscar por título ou autor…"></div>
+  <select id="libTab">
+    <option value="todas">Todas</option>
+    <option value="compradas">Minhas compras</option>
+    <option value="trilha">Só da trilha</option>
+  </select>
+  <select id="libDiff">
+    <option value="all">Todas as dificuldades</option>
+    <option value="1">1 • Iniciante</option><option value="2">2 • Básico</option>
+    <option value="3">3 • Intermediário</option><option value="4">4 • Avançado</option><option value="5">5 • Mestre</option>
+  </select>
+  <select id="libSort">
+    <option value="diff-asc">Dificuldade ↑</option><option value="diff-desc">Dificuldade ↓</option>
+    <option value="title">Título A–Z</option><option value="status">Status</option>
+  </select>
+
+  <!-- 👇 BOTÃO NOVO -->
+  <div class="view-toggle" role="tablist" aria-label="Modo de visualização">
+    <button type="button" id="libViewList" class="view-toggle-btn" data-view="list" title="Visualizar em lista" aria-pressed="true">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+        <circle cx="3.5" cy="6" r="1.5" fill="currentColor"/><circle cx="3.5" cy="12" r="1.5" fill="currentColor"/><circle cx="3.5" cy="18" r="1.5" fill="currentColor"/>
+      </svg>
+    </button>
+    <button type="button" id="libViewGrid" class="view-toggle-btn" data-view="grid" title="Visualizar em galeria" aria-pressed="false">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+      </svg>
+    </button>
+  </div>
+
+  <span id="libCount" class="libcount"></span>
+</div>
         <span id="libCount" class="libcount"></span>
       </div>
       <div id="songGrid" class="grid"></div>
@@ -1159,6 +1314,7 @@ const DEF = {
   diasEstudados: {},
   ranges: {},
   settings: { sound: true, names: true, assist: true, tipSeen: false, metronome: false, metLight: false },
+  libView: 'list',   // 👈 NOVO: 'list' ou 'grid'
   conta: null,
   alunoSessao: null
 };
@@ -1176,6 +1332,7 @@ function load(){
       if(!Array.isArray(s.compras)) s.compras = [];
       if(!s.completed || typeof s.completed !== 'object') s.completed = {};
       if(!s.diasEstudados || typeof s.diasEstudados !== 'object') s.diasEstudados = {};
+      if(s.libView !== 'list' && s.libView !== 'grid') s.libView = 'list';   // 👈 AQUI
       return s;
     }
   }catch(e){}
@@ -1549,8 +1706,14 @@ function updatePlayUI(){
 function ensureVisible(paper, ev){
   const e = ev.elems && ev.elems[0];
   if(!e || !paper) return;
-  const r = e.getBoundingClientRect(), p = paper.getBoundingClientRect();
-  if(r.bottom > p.bottom - 16 || r.top < p.top + 8) paper.scrollTop += (r.top - p.top) - p.height * 0.35;
+  const r = e.getBoundingClientRect();
+  const p = paper.getBoundingClientRect();
+  // Só scrolla se a nota estiver fora da área visível (com margem de 16px)
+  if(r.bottom > p.bottom - 16){
+    paper.scrollTop += (r.bottom - p.bottom) + 60;
+  } else if(r.top < p.top + 8){
+    paper.scrollTop -= (p.top - r.top) + 60;
+  }
 }
 
 /* ================= metrônomo ================= */
@@ -2254,12 +2417,20 @@ function cardHtml(s){
 function renderBiblioteca(){
   const grid = $('#songGrid');
   if(!grid) return;
+
+  // Aplica modo atual
+  const modo = (S.libView === 'grid') ? 'grid' : 'list';
+  grid.classList.toggle('mode-list', modo === 'list');
+  grid.classList.toggle('mode-grid', modo === 'grid');
+  atualizarBotoesView(modo);
+
   const list = withStatus();
   const q = ($('#libSearch').value || '').toLowerCase().trim();
   const tab = ($('#libTab') && $('#libTab').value) || 'todas';
   const fd = $('#libDiff').value;
   const sort = $('#libSort').value;
   const vis = musicasVisiveis();
+
   let f = list.filter(s => {
     if(tab === 'compradas' && !vis.has(s.id)) return false;
     if(tab === 'trilha' && vis.has(s.id)) return false;
@@ -2267,14 +2438,32 @@ function renderBiblioteca(){
     if(q && !(s.title + ' ' + (s.composer || '')).toLowerCase().includes(q)) return false;
     return true;
   });
+
   const rank = s => s.current ? 0 : s.done ? 1 : 2;
   if(sort === 'diff-desc') f.sort((a,b) => b.difficulty - a.difficulty || a.idx - b.idx);
   else if(sort === 'title') f.sort((a,b) => a.title.localeCompare(b.title, 'pt'));
   else if(sort === 'status') f.sort((a,b) => rank(a) - rank(b) || a.idx - b.idx);
   else f.sort((a,b) => a.idx - b.idx);
+
   grid.innerHTML = f.map(cardHtml).join('') || '<div class="empty-state">Nenhuma música. 🔍</div>';
+
   const lc = $('#libCount');
   if(lc) lc.textContent = f.length + ' de ' + list.length;
+}
+
+function atualizarBotoesView(modo){
+  const bList = $('#libViewList');
+  const bGrid = $('#libViewGrid');
+  if(bList) bList.setAttribute('aria-pressed', String(modo === 'list'));
+  if(bGrid) bGrid.setAttribute('aria-pressed', String(modo === 'grid'));
+}
+
+function setLibView(modo){
+  if(modo !== 'list' && modo !== 'grid') modo = 'list';
+  S.libView = modo;
+  save();
+  renderBiblioteca();
+  sfxClick();
 }
 function deleteCustom(id){
   const s = S.custom.find(x => x.id === id);
@@ -2305,7 +2494,7 @@ function abrirPreview(song, opts){
   openModal(
     '<div class="modal-head"><h3>' + esc(song.title) + '</h3><button class="icon-btn" id="pvClose">' + I.x + '</button></div>'
     + (song.composer ? '<p class="sub" style="text-align:left;margin-top:-6px">' + esc(song.composer) + '</p>' : '')
-    + '<div id="' + paperId + '" style="background:var(--paper);border-radius:12px;padding:16px 12px;margin-top:12px;max-height:46vh;overflow:auto;text-align:left"></div>'
+    + '<div id="' + paperId + '" style="background:var(--paper);border-radius:12px;padding:12px 10px;margin-top:12px;min-height:180px;max-height:50vh;overflow:auto;text-align:left"></div>'
     + (apenasAmostra ? '<p class="sub" style="text-align:left;margin-top:8px;color:var(--ink3)">Prévia gratuita — apenas os primeiros compassos.</p>' : '')
     + '<div class="modal-actions" style="margin-top:14px">'
     + '<button class="btn blue small" id="pvPlay">' + I.play + ' Ouvir</button>'
@@ -2315,13 +2504,15 @@ function abrirPreview(song, opts){
     { onClose: () => stopPlayback() }
   );
   injectIcons();
+
   const paper = document.getElementById(paperId);
   if(!paper) return;
+
   if(!window.ABCJS){
     paper.innerHTML = '<div class="paper-error">⚠️ abcjs não carregou.</div>';
     return;
   }
-  let tunes = null;
+
   let abc = song.abc;
   if(apenasAmostra){
     const linhas = abc.split('\n');
@@ -2336,22 +2527,65 @@ function abrirPreview(song, opts){
     }
     abc = out.join('\n');
   }
-  try{
-    const cs = getComputedStyle(paper);
-    const w = Math.max(260, paper.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 8);
-    tunes = ABCJS.renderAbc(paper, abc, {
-      staffwidth: w, scale: 1.05, add_classes: true,
-      paddingtop: 12, paddingbottom: 8, paddingleft: 2, paddingright: 2,
-      wrap: { minSpacing: 1.8, maxSpacing: 2.6, preferredMeasuresPerLine: 4 }
-    });
-  }catch(err){
-    paper.innerHTML = '<div class="paper-error">Erro: ' + esc(err.message) + '</div>';
+
+  let ex = { events: [], total: 0 };
+  let tp = { bpm: 100, q: 0.25 };
+  let tentativas = 0;
+
+  function renderizar(){
+    tentativas++;
+    const wReal = paper.clientWidth;
+
+    // Se o modal ainda não tem largura real, aguarda
+    if(!wReal || wReal < 50){
+      if(tentativas > 25){
+        paper.innerHTML = '<div class="paper-error">Não foi possível medir o modal.</div>';
+        return;
+      }
+      setTimeout(renderizar, 60);
+      return;
+    }
+
+    // 👇 largura segura: desconta padding (24) e respiro (8), com scale 1.0
+    const w = Math.max(240, Math.floor(wReal - 40));
+    paper.innerHTML = '';
+
+    let tunes = null;
+    try{
+      tunes = ABCJS.renderAbc(paper, abc, {
+        staffwidth: w,
+        scale: 1.0,                 // 👈 sem scale, cabe certinho
+        add_classes: true,
+        paddingtop: 6,              // 👈 positivo, SEM cortar o pentagrama
+        paddingbottom: 10,
+        paddingleft: 4,
+        paddingright: 4,
+        wrap: { minSpacing: 1.8, maxSpacing: 2.6, preferredMeasuresPerLine: 4 }
+      });
+    }catch(err){
+      paper.innerHTML = '<div class="paper-error">Erro: ' + esc(err.message) + '</div>';
+      return;
+    }
+
+    const tune = tunes && tunes[0];
+    ex = tune ? extractNotes(tune) : { events: [], total: 0 };
+    tp = tune ? getTempo(tune) : { bpm: 100, q: 0.25 };
+    paper.scrollTop = 0;
+    paper.scrollLeft = 0;
   }
-  const tune = tunes && tunes[0], ex = tune ? extractNotes(tune) : { events: [], total: 0 };
-  const tp = tune ? getTempo(tune) : { bpm: 100, q: 0.25 };
-  const spw = 60 / (tp.bpm * tp.q);
+
+  renderizar();
+
+  // diagnóstico se não renderizou em 1.2s
+  setTimeout(() => {
+    if(!paper.querySelector('svg') && !paper.querySelector('.paper-error')){
+      paper.innerHTML = '<div class="paper-error">⚠️ A partitura não carregou.<br>Tente fechar e abrir novamente.</div>';
+    }
+  }, 1200);
+
   const btnPlay = document.getElementById('pvPlay');
   if(btnPlay) btnPlay.onclick = () => {
+    const spw = 60 / (tp.bpm * tp.q);
     if(PB.playing && PB.session && PB.session.owner === 'preview'){ stopPlayback(); return; }
     startPlayback({ owner: 'preview', events: ex.events, total: ex.total, spw, paper, keys: null, onEnd: () => {} });
   };
@@ -3486,6 +3720,11 @@ function wire(){
   const libDiff   = $('#libDiff');   if(libDiff)   libDiff.addEventListener('change', renderBiblioteca);
   const libSort   = $('#libSort');   if(libSort)   libSort.addEventListener('change', renderBiblioteca);
 
+const libViewList = $('#libViewList');
+const libViewGrid = $('#libViewGrid');
+if(libViewList) libViewList.addEventListener('click', () => setLibView('list'));
+if(libViewGrid) libViewGrid.addEventListener('click', () => setLibView('grid'));
+  
   const songGrid = $('#songGrid');
   if(songGrid) songGrid.addEventListener('click', e => {
     const b = e.target.closest('[data-action]');
